@@ -12,7 +12,7 @@ public class WorkerPoolExample {
 	
 	@SuppressWarnings("unchecked")
     public static void main(String[] args) {
-		int queueMax = (int)Math.pow(2, 3);
+		int queueMax = (int)Math.pow(2, 10);
 		CustomThreadFactory tFactory = new CustomThreadFactory();
         Disruptor<ValueEvent> disruptor = new Disruptor<ValueEvent>(ValueEvent.EVENT_FACTORY, queueMax, tFactory,
         		ProducerType.SINGLE, 
@@ -20,7 +20,7 @@ public class WorkerPoolExample {
 //        BlockingWaitStrategy | SleepingWaitStrategy | YieldingWaitStrategy | BusySpinWaitStrategy
         WorkHandler<ValueEvent>[] handlers = new WorkHandler[10];
         for(int i=0; i< handlers.length; i++) {
-        	CustomWorkHandler handler = new CustomWorkHandler("Handler"+i, 1000); 
+        	CustomWorkHandler handler = new CustomWorkHandler("Handler"+i, 100, 1); 
 	        handlers[i] = handler;
         }
         
