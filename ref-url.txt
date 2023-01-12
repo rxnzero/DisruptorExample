@@ -1,0 +1,3 @@
+https://lmax-exchange.github.io/disruptor/user-guide/index.html#_alternative_wait_strategies
+https://www.linkedin.com/pulse/high-performance-event-publishing-disruptor-udai-bhaskar
+https://github.com/pvub/demos/tree/master/disruptor/DisruptorDemo

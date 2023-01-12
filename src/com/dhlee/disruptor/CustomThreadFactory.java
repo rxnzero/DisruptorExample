@@ -19,7 +19,7 @@ public class CustomThreadFactory implements ThreadFactory {
     }
 
     public CustomThreadFactory() {
-		// TODO Auto-generated constructor stub
+
 	}
 
 }
