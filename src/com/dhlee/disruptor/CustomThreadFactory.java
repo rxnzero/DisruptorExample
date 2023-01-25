@@ -14,7 +14,7 @@ public class CustomThreadFactory implements ThreadFactory {
     @Override
       public Thread newThread(Runnable command) {
         count++;
-        System.out.println( String.format(">> newThread-%d created", count) );
+//        System.out.println( String.format(">> newThread-%d created", count) );
         return new Thread(command);
     }
 

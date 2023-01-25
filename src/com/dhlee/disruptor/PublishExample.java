@@ -2,9 +2,9 @@ package com.dhlee.disruptor;
 
 import java.util.UUID;
 
-import com.lmax.disruptor.BlockingWaitStrategy;
 import com.lmax.disruptor.EventHandler;
 import com.lmax.disruptor.RingBuffer;
+import com.lmax.disruptor.SleepingWaitStrategy;
 import com.lmax.disruptor.dsl.Disruptor;
 import com.lmax.disruptor.dsl.ProducerType;
 
@@ -16,11 +16,11 @@ public class PublishExample {
 //		ExecutorService exec = Executors.newCachedThreadPool();
 //        Disruptor<ValueEvent> disruptor = new Disruptor<ValueEvent>(ValueEvent.EVENT_FACTORY, 1024, exec);
 		CustomThreadFactory tFactory = new CustomThreadFactory();
-        Disruptor<ValueEvent> disruptor = new Disruptor<ValueEvent>(ValueEvent.EVENT_FACTORY, 8, tFactory,
+        Disruptor<ValueEvent> disruptor = new Disruptor<ValueEvent>(ValueEvent.EVENT_FACTORY, 256, tFactory,
         		ProducerType.SINGLE, 
-                new BlockingWaitStrategy());
+                new SleepingWaitStrategy());
         
-        EventHandler<ValueEvent>[] handlers = new EventHandler[5];
+        EventHandler<ValueEvent>[] handlers = new EventHandler[1];
         for(int i=0; i< handlers.length; i++) {
         	CustomEventHandler handler = new CustomEventHandler("Handler"+i); 
 	        handlers[i] = handler;
@@ -32,7 +32,7 @@ public class PublishExample {
 	        disruptor.start();
 	        RingBuffer<ValueEvent> ringBuffer = disruptor.getRingBuffer();
 	
-	        for (long i = 0; i < 20; i++) {
+	        for (long i = 0; i < 1024; i++) {
 	            String uuid = UUID.randomUUID().toString();
 	            // Two phase commit. Grab one of the 1024 slots
 	            long seq = ringBuffer.next();

@@ -16,6 +16,6 @@ public class CustomEventHandler  implements EventHandler<ValueEvent> {
 		System.out.printf("EventHandler: %s Sequence: %s ValueEvent: %s\n"
 				,name, sequence, event.getValue()
 				);
-//		Thread.sleep(2000);
+		Thread.sleep(200);
     }
 }

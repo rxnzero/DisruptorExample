@@ -18,7 +18,7 @@ public class WorkerPoolExample {
         		ProducerType.SINGLE, 
                 new SleepingWaitStrategy());
 //        BlockingWaitStrategy | SleepingWaitStrategy | YieldingWaitStrategy | BusySpinWaitStrategy
-        WorkHandler<ValueEvent>[] handlers = new WorkHandler[10];
+        WorkHandler<ValueEvent>[] handlers = new WorkHandler[16];
         for(int i=0; i< handlers.length; i++) {
         	CustomWorkHandler handler = new CustomWorkHandler("Handler"+i, 100, 1); 
 	        handlers[i] = handler;
@@ -30,9 +30,12 @@ public class WorkerPoolExample {
 	        
 	        System.out.println(">> disruptor.start");
 	        disruptor.start();
+	        
+	        Thread.sleep(2000);	 
+	        
 	        RingBuffer<ValueEvent> ringBuffer = disruptor.getRingBuffer();
 	
-	        for (long i = 0; i < 100; i++) {
+	        for (long i = 0; i < 1024; i++) {
 	            String uuid = UUID.randomUUID().toString();
 	            // Two phase commit. Grab one of the 1024 slots
 	            System.out.println("-> next :" + i);
@@ -40,15 +43,16 @@ public class WorkerPoolExample {
 	            // try/finally : Failing to do so can result in corruption of the state of the Disruptor
 	            try {
 //		            System.out.println( String.format("ringBuffer seq = %d uuid=%s", seq, uuid) );
-	            	System.out.println("-> ringBuffer.get :" + i);
+//	            	System.out.println("-> ringBuffer.get :" + i);
 		            ValueEvent valueEvent = ringBuffer.get(seq);
-		            System.out.println("-> valueEvent.setValue :" + i);
+//		            System.out.println("-> valueEvent.setValue :" + i);
 		            valueEvent.setValue(uuid);
 	            }
 	            finally {
-	            	System.out.println("-> publish :" + i); 
+	            	System.out.println("-> publish :" + i +" remain :" + ringBuffer.remainingCapacity()); 
 	            	ringBuffer.publish(seq);
 	            }
+	            Thread.sleep(5);
 	        }
 	        System.out.println("<< disruptor remainingCapacity : " + disruptor.getRingBuffer().remainingCapacity());
 	        int sleepSecs = 2;

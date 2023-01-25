@@ -20,23 +20,11 @@ public class LoggingPoolManager {
 		LoggingPoolObjectFactory factory = new LoggingPoolObjectFactory();
 		
 		config.setMaxTotal(maxSize);
-		config.setMinIdle(maxSize);
-		config.setMaxIdle(maxSize);
-        config.setMaxWait(Duration.ofMillis(1000));
-        config.setLifo(true);
+		config.setMinIdle(1);
+		config.setMaxIdle(5);
+        config.setMaxWait(Duration.ofSeconds(5));
+//        config.setLifo(true);
         pool = new GenericObjectPool<LoggingPoolObject>(factory, config);
-        
-        try {
-        	LoggingPoolObject initArray[] = new LoggingPoolObject[maxSize];
-            for (int i=0; i<maxSize; i++) {
-            	initArray[i] = pool.borrowObject();
-            }
-            for (int i=maxSize-1; i >= 0; i--) {
-            	pool.returnObject(initArray[i]);
-            }
-        } catch(Exception e) {
-        	e.printStackTrace();
-        }
         stopped = false;
 	}
 	
@@ -117,12 +105,12 @@ public class LoggingPoolManager {
 		for (int i = 0; i < 10; i++) {
 			service.submit(task);
 		}
-//		System.out.println("MAIN : Wait 1 secs.");
-//		try {
-//			Thread.sleep(1 * 1000);
-//		} catch (InterruptedException e) {
-//			;
-//		}
+		System.out.println("MAIN : Wait 1 secs.");
+		try {
+			Thread.sleep(10 * 1000);
+		} catch (InterruptedException e) {
+			;
+		}
 		System.out.println("MAIN : <-- manager.shutdown");
 		manager.shutdown();
 		

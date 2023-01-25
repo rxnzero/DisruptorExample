@@ -65,7 +65,7 @@ public class LoggingPoolObject {
 		while(true) {
     		if(queueMax == disruptor.getRingBuffer().remainingCapacity()) break;
     		try {
-    			System.out.println(String.format("Sleep 100 ms."));
+    			System.out.println(String.format("disruptor-%d Sleep 100 ms.", id));
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				;
