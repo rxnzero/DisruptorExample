@@ -11,6 +11,8 @@ import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 
 public class LoggingPoolManager {
 	private static boolean stopped = true;
+	private static boolean initOnStartup = true;
+	
 	private ObjectPool<LoggingPoolObject> pool;
 	
 	public LoggingPoolManager() {
@@ -20,11 +22,29 @@ public class LoggingPoolManager {
 		LoggingPoolObjectFactory factory = new LoggingPoolObjectFactory();
 		
 		config.setMaxTotal(maxSize);
-		config.setMinIdle(1);
-		config.setMaxIdle(5);
+		config.setMinIdle(maxSize);
+		config.setMaxIdle(maxSize);
         config.setMaxWait(Duration.ofSeconds(5));
 //        config.setLifo(true);
         pool = new GenericObjectPool<LoggingPoolObject>(factory, config);
+        
+        LoggingPoolObject[] pools = new LoggingPoolObject[maxSize];
+        
+        if(initOnStartup) {
+	        for(int i=0; i<maxSize; i++ ) {
+	        	try {
+					pools[i] = pool.borrowObject();
+				} catch (Exception e) {
+				}
+	        }
+	        for(int i=0; i<maxSize; i++ ) {
+	        	try {
+	        		pool.returnObject(pools[i]);
+				} catch (Exception e) {
+				}
+	        }
+        }
+        
         stopped = false;
 	}
 	
@@ -62,7 +82,10 @@ public class LoggingPoolManager {
 	private static void testSingle() {
 		System.out.println("MAIN : START. -->");
 		LoggingPoolManager manager = new LoggingPoolManager();
+
 		try {
+			System.out.println("MAIN : Wait 10secs.");
+			Thread.sleep(10 * 1000);
 			LoggingPoolObject queue = manager.borrowObject();
 			String uuid = UUID.randomUUID().toString();
 			queue.putMessage(uuid);
@@ -79,6 +102,13 @@ public class LoggingPoolManager {
 	}
 	private static void testMulti() {
 		LoggingPoolManager manager = new LoggingPoolManager();
+		System.out.println("MAIN : Wait 10secs.");
+		try {
+			Thread.sleep(10 * 1000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 		Runnable task = new Runnable() {			
 			public void run() {
 				for(int i=0; i< 10; i++) {
@@ -117,6 +147,7 @@ public class LoggingPoolManager {
 		service.shutdown();
 	}
 	public static void main(String[] args) {
-		testMulti();
+//		testSingle();
+		testMulti();		
 	}
 }

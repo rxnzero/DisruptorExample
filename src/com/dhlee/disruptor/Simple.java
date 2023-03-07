@@ -14,6 +14,17 @@ public class Simple {
 	
 	@SuppressWarnings("unchecked")
     public static void main(String[] args) {
+		
+		double p = 0;
+		for(int i=1; i<=10; i++) {
+			p = Math.pow(2,  i);
+			System.out.printf("2 pow %d = %f\n", i, p);
+			System.out.printf("%f exp = %d\n", p, Math.getExponent(p));
+			System.out.printf("check = %b\n", Math.pow(2, Math.getExponent(p)));
+		}
+		System.out.println(100 == Math.pow(2, Math.getExponent(100)));
+	}
+	public static void test() {
         // Preallocate RingBuffer with 1024 ValueEvents
 		CustomThreadFactory tFactory = new CustomThreadFactory();
         Disruptor<ValueEvent> disruptor = new Disruptor<ValueEvent>(ValueEvent.EVENT_FACTORY, (int)Math.pow(2, 10), tFactory,

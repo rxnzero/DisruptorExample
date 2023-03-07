@@ -12,7 +12,10 @@ public class WorkerPoolExample {
 	
 	@SuppressWarnings("unchecked")
     public static void main(String[] args) {
-		int queueMax = (int)Math.pow(2, 10);
+		int queueMax = 100; //(int)Math.pow(2, 10);
+		if (Integer.bitCount(queueMax) != 1) {
+			queueMax = (int)Math.pow(2, Math.getExponent(queueMax));
+		}
 		CustomThreadFactory tFactory = new CustomThreadFactory();
         Disruptor<ValueEvent> disruptor = new Disruptor<ValueEvent>(ValueEvent.EVENT_FACTORY, queueMax, tFactory,
         		ProducerType.SINGLE, 
