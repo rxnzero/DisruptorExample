@@ -22,9 +22,9 @@ public class LoggingPoolManager {
 		LoggingPoolObjectFactory factory = new LoggingPoolObjectFactory();
 		
 		config.setMaxTotal(maxSize);
-		config.setMinIdle(maxSize);
-		config.setMaxIdle(maxSize);
+		config.setMaxIdle(1);
         config.setMaxWait(Duration.ofSeconds(5));
+        config.setMinEvictableIdleTime(Duration.ofMinutes(10));
 //        config.setLifo(true);
         pool = new GenericObjectPool<LoggingPoolObject>(factory, config);
         
@@ -144,7 +144,7 @@ public class LoggingPoolManager {
 		System.out.println("MAIN : <-- manager.shutdown");
 		manager.shutdown();
 		
-		service.shutdown();
+		service.shutdownNow();
 	}
 	public static void main(String[] args) {
 //		testSingle();
